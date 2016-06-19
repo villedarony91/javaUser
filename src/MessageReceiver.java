@@ -11,11 +11,11 @@ import com.rabbitmq.client.Envelope;
 
 
 public class MessageReceiver {
-	Engine eng = new Engine();
+	Engine eng; 
 	ConnectionFactory factory;
 	Connection connection;
 	Channel channel;
-	private final static String QUEUE_NAME = "messages";
+	private final static String QUEUE_NAME = "hello";
 	ListaDobleUsuarios lsd = new ListaDobleUsuarios();
 	
 	MessageReceiver() throws Exception{
@@ -42,7 +42,7 @@ public class MessageReceiver {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
+			}	
 		};
 		channel.basicConsume(QUEUE_NAME, true, consumer);
 	}
@@ -51,12 +51,14 @@ public class MessageReceiver {
 			String[] result = message.split(",");
 			for(int i = 0; i < result.length; i++)
 				System.out.println(result[i]);
-			if(result.length > 0){
+			if(result.length >= 3){
 			switch(result[0]){
 			case "LOGIN":
 				if(lsd.validate(result[1], result[2])){
+					eng = new Engine();
 					eng.sendMessage("OK");
 				}else{
+					eng = new Engine();
 					eng.sendMessage("No");
 				}
 				
