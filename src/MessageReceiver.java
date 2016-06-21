@@ -7,6 +7,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import Dispersa.ProcessOrto;
 
 
 public class MessageReceiver {
@@ -46,7 +47,6 @@ public class MessageReceiver {
 	}
 	
 	void distributeMessage(String message) throws Exception{
-            message = message.replace("\n", "").replace("\r", "");
 		String[] result = message.split(",");
                 if(result.length == 1){
                     checkInstructions(message);
@@ -57,8 +57,14 @@ public class MessageReceiver {
 			switch(result[0]){
 			case "LOGIN":
 				if(lsd.validate(result[1], result[2])){
-					eng = new Engine();
-					eng.sendMessage("OK");
+                                    if(result[1].equals("admin")){
+                                        eng = new Engine();
+					eng.sendMessage("ADMIN");
+                                    }else{
+                                        eng = new Engine();
+                                        eng.sendMessage("USER");
+                                    }
+					
 				}else{
 					eng = new Engine();
 					eng.sendMessage("No");
@@ -67,6 +73,12 @@ public class MessageReceiver {
 			case "UFILE":
 				preProcessData(result);
 				break;
+                        case "LFILE":
+                            ProcessOrto ort = new ProcessOrto();
+                            ort.breakWhites(message);
+                            ort.cm.printX();
+                            System.out.println("-----------");
+                            ort.cm.printY();
 			}
 
 		}
