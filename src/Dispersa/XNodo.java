@@ -14,7 +14,7 @@ public class XNodo {
     private NodoHead head;
     private XNodo xPrev;
     private XNodo xNext;
-    private MatrizNodo xFmat;
+    public MatrizNodo xFmat;
     private int value;
     
     XNodo(NodoHead head, XNodo next, int value){

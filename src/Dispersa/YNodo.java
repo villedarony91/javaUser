@@ -14,7 +14,7 @@ public class YNodo {
     private NodoHead head;
     private YNodo yPrev;
     private YNodo yNext;
-    private MatrizNodo yFmat;
+    public MatrizNodo yFmat;
     private int value;
     
     YNodo(NodoHead head, YNodo next, int value){

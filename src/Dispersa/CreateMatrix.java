@@ -10,7 +10,7 @@ package Dispersa;
  * @author rlopez
  */
 public class CreateMatrix {
-    NodoHead ortHead;
+    public NodoHead ortHead;
     
     void setHead(String head){
         ortHead = new NodoHead(head);
@@ -19,10 +19,44 @@ public class CreateMatrix {
     void getInfo(int posX, int posY, String color){
         insertPosx(posX);
         insertPosY(posY);
+        insertValue( posX, posY, color);
     }
     
-    void insertValue(int posX, int posY, String Color){
-        
+    void insertValue(int posX, int posY , String color){
+        XNodo xtmp = ortHead.getXhead();
+        YNodo ytmp = ortHead.getYhead();
+        MatrizNodo newNode;
+        while(xtmp.getxNext() != null && xtmp.getValue() != posX){
+            xtmp = xtmp.getxNext();
+        }
+        while(ytmp.getyNext() != null && ytmp.getValue() != posY){
+            ytmp = ytmp.getyNext();
+        }
+        if(xtmp.getxFmat() == null && ytmp.getyFmat() == null){
+            newNode = new MatrizNodo(xtmp, ytmp, color);
+            xtmp.setxFmat(newNode);
+            ytmp.setyFmat(newNode);
+        }
+
+    
+       if(ytmp.getyFmat() == null && xtmp.getxFmat() != null){
+            if(xtmp.getxFmat().getYhead().getValue() > posY){
+               //  newNode = new MatrizNodo(xtmp, ytmp, null, 
+               
+            }          
+        }
+//            MatrizNodo tmpMat = xtmp.getxFmat();
+//            if(xtmp.getxFmat().getYhead().getValue() < posY &&
+//                    xtmp.getxFmat().getYnext() == null){
+//                newNode = new MatrizNodo(xtmp.getxFmat(), null, ytmp, color);
+//                xtmp.getxFmat().setYnext(newNode);
+//                ytmp.setyFmat(newNode);
+//            }
+//            if(xtmp.getxFmat().getYhead().getValue() < posY &&
+//                    xtmp.getxFmat().getYnext() != null &&
+//                    xtmp.getxFmat().getYnext().getYhead().getValue() > posY){
+//                
+//            }
     }
     
     void insertPosx(int posX){
@@ -93,10 +127,27 @@ public class CreateMatrix {
         
     }
     
+    XNodo searchX(int value){
+        XNodo tmp = ortHead.getXhead();
+        while(tmp.getValue() != value && tmp.getxNext() != null){
+            tmp = tmp.getxNext();
+        }
+        return tmp;
+    }
+    
+    YNodo searchY(int value){
+        YNodo tmp = ortHead.getYhead();
+        while(tmp.getValue() != value && tmp.getyNext() != null){
+            tmp = tmp.getyNext();
+        }
+        return tmp;
+    }
+    
     public void printX(){
         XNodo tmp = ortHead.getXhead();
         while(tmp != null){
             System.out.println(tmp.getValue());
+//            System.out.println(tmp.getxFmat().getValue());
             tmp = tmp.getxNext();
         }
     }

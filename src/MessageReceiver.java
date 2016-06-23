@@ -17,6 +17,8 @@ public class MessageReceiver {
 	Channel channel;
 	private final static String QUEUE_NAME = "hello";
 	ListaDobleUsuarios lsd = new ListaDobleUsuarios();
+        ProcessOrto ort = new ProcessOrto();
+        abb ab = new abb();
 	
 	MessageReceiver() throws Exception{
 		lsd.createNewList();
@@ -47,9 +49,13 @@ public class MessageReceiver {
 	}
 	
 	void distributeMessage(String message) throws Exception{
-		String[] result = message.split(",");
+            String tmp = message.replaceAll("\\s+", "");
+            String[] result = tmp.split(",");
                 if(result.length == 1){
                     checkInstructions(message);
+                }
+                if(result.length == 2){
+                    deletion(result);
                 }
 		for(int i = 0; i < result.length; i++)
 			System.out.println(i+result[i]);
@@ -74,11 +80,13 @@ public class MessageReceiver {
 				preProcessData(result);
 				break;
                         case "LFILE":
-                            ProcessOrto ort = new ProcessOrto();
+                            ort = new ProcessOrto();
                             ort.breakWhites(message);
                             ort.cm.printX();
                             System.out.println("-----------");
                             ort.cm.printY();
+                            ab.insertar(ort.cm.ortHead);                            
+                            
 			}
 
 		}
@@ -102,6 +110,7 @@ public class MessageReceiver {
 		lsd.printList();
                 lsd.graphList();
 	}
+        
         void checkInstructions(String msg){
             switch(msg){
                 case "GRAPH":
@@ -111,12 +120,35 @@ public class MessageReceiver {
                     try{
                     eng = new Engine();
                     eng.sendMessage("READY");
+                    }catch(Exception ex){                        
+                    }
+                break;
+                case "TGRAPH":
+                    //ab.preOrder();
+                    ab.graphTree();               
+                    break;
+                case "TDATA":
+                    System.out.println("-------");
+                    //System.out.println(ab.getData());
+                    try{
+                        eng = new Engine();
+                        eng.sendMessage(ab.getData());
                     }catch(Exception ex){
-                        
                     }
+                    break;
+                    
                     }
+            
                     
             }
+        
+        void deletion(String[] toDelete){
+            switch (toDelete[0]){
+                case "LDELETE":
+                    ab.eliminar(toDelete[1]);
+                    break;
+            }
+        }
 
         }
 
