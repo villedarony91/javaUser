@@ -1,3 +1,4 @@
+package DEF;
 
 public class ListaDobleUsuarios{
 	
@@ -33,7 +34,8 @@ public class ListaDobleUsuarios{
                         tmp.getUsername());
 			while(tmp.getNext() != null && compare > 0){
 				tmp = tmp.getNext();
-                                compare = toInsert.getUsername().compareTo(tmp
+                                compare = toInsert.getUsername().
+                                        compareToIgnoreCase(tmp
                                         .getUsername());
 			}
                         if(compare < 0){
@@ -59,6 +61,21 @@ public class ListaDobleUsuarios{
 		
                     if(temp.getUsername().equals(user) && 
 					temp.getPassword().equals(pass)){
+				System.out.println("entered");
+				return temp;
+			}
+			temp = temp.getNext();
+		}
+		return null;
+	}
+        
+        Nodo searchByName(String user){
+		Nodo temp = head;
+		System.out.println("-----");
+		while(temp != null){
+                    System.out.println(temp.getUsername());
+		
+                    if(temp.getUsername().equals(user)){
 				System.out.println("entered");
 				return temp;
 			}
@@ -190,6 +207,46 @@ public class ListaDobleUsuarios{
                 System.out.println(tmp.getName()+tmp.getPath());
                 tmp = tmp.getNext();
             }
+        }
+        
+        void delete(String toDelete){
+            Nodo tmp = head;
+            Nodo prev = head;
+            if(head == null){return;}
+            if(head.getUsername().equals(toDelete)){
+                tmp = tmp.getNext();
+                head = null;
+                head = tmp;
+            }else{
+                while(tmp.getNext() != null && !tmp.getUsername().equals(toDelete)){
+                    prev = tmp;
+                    tmp = tmp.getNext();
+                }
+                if(tmp.getNext() ==  null
+                        && tmp.getUsername().equals(toDelete)){
+                    prev.setNext(null);
+                    tmp = null;
+                }else{
+                    if(tmp.getUsername().equals(toDelete)){
+                        prev.setNext(tmp.getNext());
+                        tmp.getNext().setPrev(prev);
+                    }
+                }
+            }
+            
+        }
+        
+        public void update(String[] toUpdate){
+            Nodo tmp = searchByName(toUpdate[3]);
+            if(tmp != null && tmp.getFimage() != null)
+            {
+                insertNode(new Nodo(toUpdate[1], toUpdate[2],
+                        null, null, tmp.getFimage()));    
+            }else{
+                insertNode(new Nodo(toUpdate[1], toUpdate[2],
+                        null, null, null));
+            }
+            delete(toUpdate[3]);
         }
 	
 }

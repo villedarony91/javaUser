@@ -1,3 +1,8 @@
+package DEF;
+
+
+import DEF.StaticSession;
+
 
 public class NodeImage {
 	

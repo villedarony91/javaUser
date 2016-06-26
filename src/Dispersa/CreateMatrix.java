@@ -1,9 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
+/* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package Dispersa;
+
+import DEF.Writer;
 
 /**
  *
@@ -158,5 +160,103 @@ public class CreateMatrix {
             System.out.println(tmp.getValue());
             tmp = tmp.getyNext();
         }
+    }
+    
+    private String getxHeaders(NodoHead ortHead){
+        StringBuilder sb = new StringBuilder();
+        XNodo tmp = ortHead.getXhead();
+        while(tmp.getxNext() != null){
+            sb.append("X").append(tmp.getValue()).append("->")
+                    .append("X").append(tmp.getxNext()
+                    .getValue()).append(";\n");
+            tmp = tmp.getxNext();
+            sb.append("X").append(tmp.getValue()).append("->")
+                    .append("X").append(tmp.getxPrev()
+                    .getValue()).append(";\n");
+        }
+        return sb.toString();
+    }
+    
+    private String getyHeaders(NodoHead ortHead){
+               StringBuilder sb = new StringBuilder();
+        YNodo tmp = ortHead.getYhead();
+        while(tmp.getyNext() != null){
+            sb.append("Y").append(tmp.getValue()).append("->")
+                    .append("Y").append(tmp.getyNext()
+                    .getValue()).append(";\n");
+            tmp = tmp.getyNext();
+            sb.append("Y").append(tmp.getValue()).append("->")
+                    .append("Y").append(tmp.getyPrev()
+                    .getValue()).append(";\n");
+        }
+        return sb.toString();
+    }
+    
+    public String getSameY(NodoHead ortHead){
+        StringBuilder sb = new StringBuilder();
+        YNodo tmp = ortHead.getYhead();
+        sb.append("{ rank = same;");
+        sb.append(ortHead.getName()).append(";");
+        while(tmp != null){
+            sb.append("Y").append(tmp.getValue()).append(";");
+            tmp = tmp.getyNext();
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+    
+    private String getfMat(NodoHead ortHead){
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        XNodo xtmp = ortHead.getXhead();
+        while(xtmp.getxNext() != null){
+           if(xtmp.getxFmat()!= null){
+               String name = "nodo" + count;
+               sb.append("{rank = same;").append("X")
+                       .append(xtmp.getValue()).append(";")
+                       .append(name).append("}\n");
+               sb.append(name).append("[label = \"")
+                       .append(xtmp.getxFmat().getValue()).append("\"];\n");
+               sb.append("X").append(xtmp.getValue()).append("->");
+               sb.append("nodo").append(count).append(";\n");
+               sb.append(name).append("->");
+               sb.append("Y").append(xtmp.getxFmat().getYhead().getValue())
+               .append(";\n");
+               sb.append(name).append("->").append("X")
+                       .append(xtmp.getValue())
+                       .append(";\n");
+               sb.append(name).append("->")
+                       .append("Y")
+                       .append(xtmp.getxFmat().getYhead().getValue())
+                       .append(";\n");
+               count ++;
+           }
+           xtmp = xtmp.getxNext();
+           
+        }
+        return sb.toString();
+    }
+    
+    public void graph(NodoHead ortHead){
+        String disHead = ortHead.getName();
+        StringBuilder sb = new StringBuilder();
+        sb.append("digraph G { \n");
+        sb.append(getSameY(ortHead));
+        sb.append(disHead).append("->").append("X")
+                .append(ortHead.getXhead().getValue()).append(";\n");
+        sb.append(disHead).append("->").append("Y")
+                .append(ortHead.getYhead().getValue()).append(";\n");
+        sb.append(getfMat(ortHead));
+        sb.append("subgraph cluster0{\n");
+        sb.append(getxHeaders(ortHead));
+        sb.append("}");
+        sb.append("subgraph cluster1{\n");
+        sb.append(getyHeaders(ortHead));
+        sb.append("}");
+        sb.append("\n}");
+        Writer w = new Writer();
+        w.write("matriz.dot", sb.toString());
+        w.compileDot("matriz");
+        
     }
 }

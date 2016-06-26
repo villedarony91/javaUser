@@ -1,3 +1,5 @@
+package DEF;
+
 import com.rabbitmq.client.*;
 
 

@@ -1,3 +1,5 @@
+package DEF;
+
 import java.io.IOException;
 
 import com.rabbitmq.client.AMQP;
@@ -18,7 +20,7 @@ public class MessageReceiver {
 	private final static String QUEUE_NAME = "hello";
 	ListaDobleUsuarios lsd = new ListaDobleUsuarios();
         ProcessOrto ort = new ProcessOrto();
-        abb ab = new abb();
+        ABB ab = new ABB();
 	
 	MessageReceiver() throws Exception{
 		lsd.createNewList();
@@ -51,6 +53,7 @@ public class MessageReceiver {
 	void distributeMessage(String message) throws Exception{
             String tmp = message.replaceAll("\\s+", "");
             String[] result = tmp.split(",");
+            String[] usr = tmp.split(",");
                 if(result.length == 1){
                     checkInstructions(message);
                 }
@@ -77,16 +80,21 @@ public class MessageReceiver {
 				}
 				break;
 			case "UFILE":
-				preProcessData(result);
+				preProcessData(usr);
 				break;
                         case "LFILE":
                             ort = new ProcessOrto();
                             ort.breakWhites(message);
-                            ort.cm.printX();
-                            System.out.println("-----------");
                             ort.cm.printY();
-                            ab.insertar(ort.cm.ortHead);                            
-                            
+                            ab.insert(ort.cm.ortHead);  
+                            break;
+                        case "NEWUSR":
+                            lsd.insertNode(new Nodo(result[1]
+                            ,result[2],null, null, null));
+                            break;
+                        case "MODUSR":
+                            lsd.update(result);
+                            break;
 			}
 
 		}
@@ -124,7 +132,6 @@ public class MessageReceiver {
                     }
                 break;
                 case "TGRAPH":
-                    //ab.preOrder();
                     ab.graphTree();               
                     break;
                 case "TDATA":
@@ -136,7 +143,6 @@ public class MessageReceiver {
                     }catch(Exception ex){
                     }
                     break;
-                    
                     }
             
                     
@@ -145,10 +151,17 @@ public class MessageReceiver {
         void deletion(String[] toDelete){
             switch (toDelete[0]){
                 case "LDELETE":
-                    ab.eliminar(toDelete[1]);
+                    ab.delete(toDelete[1]);
                     break;
+                case "UDELETE":
+                    lsd.delete(toDelete[1]);
+                    break;
+                case "DGRAPH":
+                    ort.cm.graph(ab.search(toDelete[1]).raiz.getData());
+                    break;
+                    
             }
         }
 
-        }
+}
 

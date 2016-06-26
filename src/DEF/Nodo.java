@@ -1,3 +1,8 @@
+package DEF;
+
+
+import DEF.NodeImage;
+
 
 public class Nodo {
 	
